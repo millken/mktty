@@ -41,6 +41,6 @@ func main() {
 		WriteTimeout:   5 * time.Second,
 		MaxHeaderBytes: 1 << 10,
 	}
-	//initDb()
+	initDb()
 	sdt.ListenAndServe()
 }

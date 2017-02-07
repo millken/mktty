@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/millken/mktty/common"
@@ -10,14 +11,14 @@ import (
 )
 
 func dtInit(c *gin.Context) {
-	var response gin.H
+	var data, response gin.H
 	c.Header("Access-Control-Allow-Origin", "*")
 	v := c.DefaultQuery("v", "1.0")
 	appKey := c.DefaultQuery("appkey", "")
+	requestId := strToInt(c.DefaultQuery("requestid", "1"))
 	action := c.DefaultQuery("action", "")
 
-	log.Printf("v: %s, appKey: %s, action: %s",
-		v, appKey, action)
+	log.Printf("[DEBUG] v: %s, appKey: %s, action: %s, requestId: %d", v, appKey, action, requestId)
 
 	session, err = common.NewSession(appKey)
 	if err != nil {
@@ -30,19 +31,39 @@ func dtInit(c *gin.Context) {
 	act, ok := dt.Actions[action]
 	if !ok {
 		log.Printf("[ERROR] %s action not found", action)
+		c.JSON(200, gin.H{"status": 404})
+		return
+	}
+	key := fmt.Sprintf("dns_requestid:%s", appKey)
+	if requestId == 0 {
+		redisclient.Set(key, 0, 0)
+	} else {
+		redisclient.Incr(key)
+	}
+	n, err := redisclient.Get(key).Int64()
+	if err != nil || int64(requestId) < n {
+		c.JSON(200, gin.H{"status": 403})
 		return
 	}
 	param := dt.Param{
-		Db:      db,
-		Session: session,
+		RequestId: requestId,
+		AppKey:    appKey,
+		Content:   c,
+		Db:        db,
+		Session:   session,
 	}
 	a, _ := act(param)
-	response, _ = a.Response()
-	data := gin.H{
-		"status":  200,
-		"data":    response,
-		"cookies": []gin.H{},
+	response, err = a.Response()
+	if err != nil {
+		data = gin.H{
+			"status": 501,
+			"error":  err,
+		}
+	} else {
+		data = gin.H{
+			"status": 200,
+			"data":   response,
+		}
 	}
-
 	c.JSON(200, data)
 }

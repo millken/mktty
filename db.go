@@ -20,7 +20,7 @@ var err error
 func initDb() {
 	db, err = sqlx.Connect("postgres", cf.Server.Db)
 	if err != nil {
-		log.Fatalf("connect db server error: %s", err)
+		log.Fatalf("[ERROR] connect db server error: %s", err)
 	}
 
 	redisclient = redis.NewClient(&redis.Options{
@@ -30,6 +30,6 @@ func initDb() {
 	})
 	_, err = redisclient.Ping().Result()
 	if err != nil {
-		log.Fatalf("connect redis server error: %s", err)
+		log.Fatalf("[ERROR] connect redis server error: %s", err)
 	}
 }

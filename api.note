@@ -1,7 +1,7 @@
 //dns 
 
 /?_es=xxx
-/?v=1.0&appkey=xxxxx&action=dns.getMax
+/?v=1.0&appkey=xxxxx&action=dns.getMax&requestid=1
 
 1. dns.getMax(): maxID, countID,LastUpdateTime
 2. dns.getList(maxID, limit, offset): domain, value

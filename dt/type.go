@@ -10,21 +10,12 @@ type Action interface {
 	Response() (data gin.H, err error)
 }
 
-type ActionParam struct {
-	GameId     int `json:"gameId"`
-	RoomId     int `json:"roomId"`
-	RequestId  int `json:"requestId"`
-	Action     string
-	ReturnType string `json:"returnType"`
-	Start      int
-	Size       int
-	Uid        int
-}
-
 type Param struct {
-	Ap      ActionParam
-	Db      *sqlx.DB
-	Session *common.Session
+	RequestId int
+	AppKey    string
+	Content   *gin.Context
+	Db        *sqlx.DB
+	Session   *common.Session
 }
 
 var Actions = map[string]func(Param) (Action, error){}
