@@ -10,14 +10,19 @@ import (
 
 type Config struct {
 	Server ServerConf
+	Db     DbConf
 	Log    LogConf
 }
 
 type ServerConf struct {
-	Mode      string
-	Db, Redis string
+	Mode  string
+	Redis string
 	//ReadTimeout  int `toml:"read_timeout"`
 	//WriteTimeout int `toml:"write_timeout"`
+}
+
+type DbConf struct {
+	Dns, Cdn, App string
 }
 
 type LogConf struct {

@@ -7,13 +7,13 @@ import (
 )
 
 type Session struct {
-	appKey string
+	appId  int
 	client *redis.Client
 }
 
-func NewSession(appKey string) (*Session, error) {
+func NewSession(appId int) (*Session, error) {
 	return &Session{
-		appKey: appKey,
+		appId: appId,
 	}, nil
 }
 

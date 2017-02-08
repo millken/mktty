@@ -14,7 +14,8 @@ type Param struct {
 	RequestId int
 	AppKey    string
 	Content   *gin.Context
-	Db        *sqlx.DB
+	Dns       *sqlx.DB
+	Cdn       *sqlx.DB
 	Session   *common.Session
 }
 

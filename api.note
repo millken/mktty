@@ -1,7 +1,8 @@
 //dns 
+appid=1,appkey=353a-a3cd-4dc8-b678-7a0b2d55af3c
 
-/?_es=xxx
-/?v=1.0&appkey=xxxxx&action=dns.getMax&requestid=1
+/?appid=1&appen=xxx
+/?v=1.0&appid=1&action=dns.getMax&requestid=1
 
 1. dns.getMax(): maxID, countID,LastUpdateTime
 2. dns.getList(maxID, limit, offset): domain, value
