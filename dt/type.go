@@ -1,6 +1,8 @@
 package dt
 
 import (
+	"net/url"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/millken/mktty/common"
@@ -13,10 +15,11 @@ type Action interface {
 type Param struct {
 	RequestId int
 	AppKey    string
-	Content   *gin.Context
-	Dns       *sqlx.DB
-	Cdn       *sqlx.DB
-	Session   *common.Session
+	Get       url.Values
+	//Content   *gin.Context
+	Dns     *sqlx.DB
+	Cdn     *sqlx.DB
+	Session *common.Session
 }
 
 var Actions = map[string]func(Param) (Action, error){}

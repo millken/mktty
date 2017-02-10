@@ -17,16 +17,15 @@ import (
 func dtInit(c *gin.Context) {
 	var data, response gin.H
 	var appKey string
+	get := url.Values{}
 	c.Header("Access-Control-Allow-Origin", "*")
-	v := c.DefaultQuery("v", "1.0")
+	get, _ = url.ParseQuery(string(c.Request.URL.RawQuery))
+
 	appId := strToInt(c.DefaultQuery("appid", "0"))
-	requestId := strToInt(c.DefaultQuery("requestid", "1"))
-	action := c.DefaultQuery("action", "")
-	appen := strings.Replace(c.DefaultQuery("appen", ""), " ", "+", -1)
+	appen := strings.Replace(get.Get("appen"), " ", "+", -1)
 
 	sql := fmt.Sprintf("select key from users where id=%d and expire>now()", appId)
 	dbapp.QueryRow(sql).Scan(&appKey)
-	log.Printf("[DEBUG] v: %s, appId: %d(%s), action: %s, requestId: %d, appen: %s", v, appId, appKey, action, requestId, appen)
 
 	if len(appKey) != 32 {
 		c.JSON(200, gin.H{"status": 403})
@@ -50,8 +49,7 @@ func dtInit(c *gin.Context) {
 		}
 		decryptedText := make([]byte, len(data))
 		cipher.XORKeyStream(decryptedText, data)
-		m, _ := url.ParseQuery(string(decryptedText))
-		log.Printf("%q", m)
+		get, _ = url.ParseQuery(string(decryptedText))
 	}
 
 	session, err = common.NewSession(appId)
@@ -62,6 +60,7 @@ func dtInit(c *gin.Context) {
 	}
 	session.SetRedis(redisclient)
 
+	action := get.Get("action")
 	act, ok := dt.Actions[action]
 	if !ok {
 		log.Printf("[ERROR] %s action not found", action)
@@ -69,23 +68,26 @@ func dtInit(c *gin.Context) {
 		return
 	}
 	key := fmt.Sprintf("dns_requestid:%s", appKey)
+
+	requestId := strToInt(get.Get("requestid"))
 	if requestId == 0 {
 		redisclient.Set(key, 0, 0)
 	} else {
 		redisclient.Incr(key)
 	}
 	n, err := redisclient.Get(key).Int64()
-	if err != nil || int64(requestId) < n {
+	if err != nil || int64(requestId) != n {
 		c.JSON(200, gin.H{"status": 403, "requestid": n})
 		return
 	}
 	param := dt.Param{
 		RequestId: requestId,
 		AppKey:    appKey,
-		Content:   c,
-		Dns:       dbdns,
-		Cdn:       dbcdn,
-		Session:   session,
+		Get:       get,
+		//Content:   c,
+		Dns:     dbdns,
+		Cdn:     dbcdn,
+		Session: session,
 	}
 	a, _ := act(param)
 	response, err = a.Response()
