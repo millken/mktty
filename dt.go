@@ -25,7 +25,7 @@ func dtInit(c *gin.Context) {
 	appen := strings.Replace(get.Get("appen"), " ", "+", -1)
 
 	sql := fmt.Sprintf("select key from users where id=%d and expire>now()", appId)
-	dbapp.QueryRow(sql).Scan(&appKey)
+	db.QueryRow(sql).Scan(&appKey)
 
 	if len(appKey) != 32 {
 		c.JSON(200, gin.H{"status": 403})
@@ -85,8 +85,7 @@ func dtInit(c *gin.Context) {
 		AppKey:    appKey,
 		Get:       get,
 		//Content:   c,
-		Dns:     dbdns,
-		Cdn:     dbcdn,
+		Db:      db,
 		Session: session,
 	}
 	a, _ := act(param)

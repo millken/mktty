@@ -17,8 +17,7 @@ type Param struct {
 	AppKey    string
 	Get       url.Values
 	//Content   *gin.Context
-	Dns     *sqlx.DB
-	Cdn     *sqlx.DB
+	Db      *sqlx.DB
 	Session *common.Session
 }
 

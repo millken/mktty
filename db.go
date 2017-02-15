@@ -11,21 +11,16 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var dbdns, dbcdn, dbapp *sqlx.DB
+var db *sqlx.DB
 var redisclient *redis.Client
 var session *common.Session
 var cf *common.Config
 var err error
 
 func initDb() {
-	dbdns, err = sqlx.Connect("postgres", cf.Db.Dns)
+	db, err = sqlx.Connect("postgres", cf.Server.Db)
 	if err != nil {
-		log.Fatalf("[ERROR] connect dns database error: %s", err)
-	}
-
-	dbapp, err = sqlx.Connect("postgres", cf.Db.App)
-	if err != nil {
-		log.Fatalf("[ERROR] connect app database error: %s", err)
+		log.Fatalf("[ERROR] connect database[%s] error: %s", cf.Server.Db, err)
 	}
 
 	redisclient = redis.NewClient(&redis.Options{

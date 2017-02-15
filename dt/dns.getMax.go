@@ -41,11 +41,11 @@ func (d *DnsGetMax) Response() (data gin.H, err error) {
 }
 
 func (d *DnsGetMax) getMaxCount() (maxID, countID int, err error) {
-	err = d.param.Dns.QueryRow("select max(id) max_id,count(id) count_id from config.record").Scan(&maxID, &countID)
+	err = d.param.Db.QueryRow("select max(id) max_id,count(id) count_id from config.record").Scan(&maxID, &countID)
 	return
 }
 
 func (d *DnsGetMax) getMaxTime() (utime string, err error) {
-	err = d.param.Dns.QueryRow("select max(utime) utime from config.event").Scan(&utime)
+	err = d.param.Db.QueryRow("select max(utime) utime from config.event").Scan(&utime)
 	return
 }
