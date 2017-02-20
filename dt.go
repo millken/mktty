@@ -22,7 +22,11 @@ func dtInit(c *gin.Context) {
 	get, _ = url.ParseQuery(string(c.Request.URL.RawQuery))
 
 	appId := strToInt(c.DefaultQuery("appid", "0"))
-	appen := strings.Replace(get.Get("appen"), " ", "+", -1)
+	appen := get.Get("appen")
+	if appen == "" {
+		appen, _ = c.GetPostForm("appen")
+	}
+	appen = strings.Replace(appen, " ", "+", -1)
 
 	sql := fmt.Sprintf("select key from users where id=%d and expire>now()", appId)
 	db.QueryRow(sql).Scan(&appKey)
@@ -49,6 +53,7 @@ func dtInit(c *gin.Context) {
 		}
 		decryptedText := make([]byte, len(data))
 		cipher.XORKeyStream(decryptedText, data)
+		log.Printf("[DEBUG] data=%s", decryptedText)
 		get, _ = url.ParseQuery(string(decryptedText))
 	}
 

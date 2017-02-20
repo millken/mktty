@@ -33,6 +33,7 @@ func main() {
 
 	dt := gin.Default()
 	dt.GET("/", dtInit)
+	dt.POST("/", dtInit)
 
 	sdt := &http.Server{
 		Addr:           ":6020",
