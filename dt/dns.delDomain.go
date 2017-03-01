@@ -3,7 +3,7 @@ package dt
 import "github.com/gin-gonic/gin"
 
 func init() {
-	DtRegister("cdn.delServer", NewDnsDelDomain)
+	DtRegister("cdn.delDomain", NewDnsDelDomain)
 }
 
 type DnsDelDomain struct {
