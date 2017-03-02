@@ -31,7 +31,7 @@ func NewDnsGetLastEvent(param Param) (Action, error) {
 func (d *DnsGetLastEvent) Response() (data gin.H, err error) {
 	utime := d.param.Get.Get("utime")
 
-	sqlstr := fmt.Sprintf("select event.domain, utime, act, value from config.event left outer join config.record on event.domain = record.domain where utime>'%s' order by utime asc", utime)
+	sqlstr := fmt.Sprintf("select event.domain, utime, act, value from dns.event left outer join dns.record on event.domain = record.domain where utime>'%s' order by utime asc", utime)
 	records := []Event{}
 	err = d.param.Db.Select(&records, sqlstr)
 	if err != nil {

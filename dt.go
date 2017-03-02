@@ -28,7 +28,7 @@ func dtInit(c *gin.Context) {
 	}
 	appen = strings.Replace(appen, " ", "+", -1)
 
-	sql := fmt.Sprintf("select key from users where id=%d and expire>now()", appId)
+	sql := fmt.Sprintf("select key from app.users where id=%d and expire>now()", appId)
 	db.QueryRow(sql).Scan(&appKey)
 
 	if len(appKey) != 32 {

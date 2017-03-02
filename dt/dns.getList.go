@@ -32,7 +32,7 @@ func (d *DnsGetList) Response() (data gin.H, err error) {
 	limit := common.StrToInt(d.param.Get.Get("limit"))
 	offset := common.StrToInt(d.param.Get.Get("offset"))
 
-	sqlstr := fmt.Sprintf("SELECT * FROM config.record where id<=%d order by id asc limit %d offset %d", maxID, limit, offset)
+	sqlstr := fmt.Sprintf("SELECT * FROM dns.record where id<=%d order by id asc limit %d offset %d", maxID, limit, offset)
 	records := []Record{}
 	d.param.Db.Select(&records, sqlstr)
 	data = gin.H{"records": records}
