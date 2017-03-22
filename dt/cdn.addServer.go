@@ -20,7 +20,7 @@ func (d *CdnAddServer) Response() (data gin.H, err error) {
 	servername := d.param.Get.Get("servername")
 	setting := d.param.Get.Get("setting")
 
-	sqlstr := "insert into cdn.server (servername, setting) VALUES (:servername, :setting)"
+	sqlstr := "insert into cdn.server (servername, setting) VALUES (:servername, :setting) ON CONFLICT (servername) DO UPDATE SET setting = :setting"
 	_, err = d.param.Db.NamedExec(sqlstr,
 		map[string]interface{}{
 			"servername": servername,

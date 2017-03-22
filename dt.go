@@ -53,7 +53,7 @@ func dtInit(c *gin.Context) {
 		}
 		decryptedText := make([]byte, len(data))
 		cipher.XORKeyStream(decryptedText, data)
-		log.Printf("[DEBUG] data=%s", decryptedText)
+		//log.Printf("[DEBUG] data=%s", decryptedText)
 		get, _ = url.ParseQuery(string(decryptedText))
 	}
 
