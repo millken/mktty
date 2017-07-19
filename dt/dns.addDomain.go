@@ -29,7 +29,7 @@ func (d *DnsAddDomain) Response() (data gin.H, err error) {
 		return
 	}
 
-	sqlstr := "insert into dns.record (domain, value) VALUES (:domain, :value)"
+	sqlstr := "insert into dns.record (domain, value) VALUES (:domain, :value)  ON CONFLICT (domain) DO UPDATE SET value = :value"
 	_, err = d.param.Db.NamedExec(sqlstr,
 		map[string]interface{}{
 			"domain": domain,
