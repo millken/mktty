@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
-	"github.com/millken/mktty/common"
 )
 
 type Action interface {
@@ -13,12 +12,9 @@ type Action interface {
 }
 
 type Param struct {
-	RequestId int
-	AppKey    string
-	Get       url.Values
+	Get url.Values
 	//Content   *gin.Context
-	Db      *sqlx.DB
-	Session *common.Session
+	Db *sqlx.DB
 }
 
 var Actions = map[string]func(Param) (Action, error){}

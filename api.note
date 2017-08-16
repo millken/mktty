@@ -7,3 +7,7 @@ appid=1,appkey=353a-a3cd-4dc8-b678-7a0b2d55af3c
 1. dns.getMax(): maxID, countID,LastUpdateTime
 2. dns.getList(maxID, limit, offset): domain, value
 3. dns.getLast(LastUpdateTime): domain, LastUpdateTime, action, value
+
+//v2
+post /?v=2.0&appid=1
+action=cdn.addServer&setting=aaaaaaaaaaaa&token=xxxxx
