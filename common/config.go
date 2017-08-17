@@ -14,6 +14,7 @@ type Config struct {
 }
 
 type ServerConf struct {
+	Addr  string
 	Mode  string
 	Redis string
 	Db    string

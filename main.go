@@ -35,8 +35,12 @@ func main() {
 	dt.GET("/", dtInit)
 	dt.POST("/", dtInit)
 
+	addr := ":6020"
+	if cf.Server.Addr != "" {
+		addr = cf.Server.Addr
+	}
 	sdt := &http.Server{
-		Addr:           ":6020",
+		Addr:           addr,
 		Handler:        dt,
 		ReadTimeout:    5 * time.Second,
 		WriteTimeout:   5 * time.Second,

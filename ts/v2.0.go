@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/url"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/millken/mktty/dt"
@@ -79,6 +80,16 @@ func (v *Version2) Handler() {
 		c.JSON(200, gin.H{"status": 404, "error": fmt.Sprintf("action not found: %s", action)})
 		return
 	}
+	sqlstr := "update app.users set lastvisit=now() where id=:appid"
+	_, err = db.NamedExec(sqlstr,
+		map[string]interface{}{
+			"appid": appId,
+		})
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		c.JSON(200, gin.H{"status": 500, "error": fmt.Sprintf("db: %s", err)})
+		return
+	}
 	param := dt.Param{
 		Get: postData,
 		//Content:   c,
@@ -92,9 +103,12 @@ func (v *Version2) Handler() {
 			"error":  err,
 		}
 	} else {
+		deadline := time.Now().Unix() + 3600
 		data = gin.H{
-			"status": 200,
-			"data":   response,
+			"status":   200,
+			"deadline": deadline,
+			"token":    ComputeHmac256(fmt.Sprintf("%d+%s", deadline, appKey), appKey),
+			"data":     response,
 		}
 	}
 	c.JSON(200, data)
